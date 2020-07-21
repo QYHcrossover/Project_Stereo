@@ -4,7 +4,7 @@ import glob
 
 def detection(path,w,h):
     '''
-     parameters: w,h 一张图横纵各有几个格点
+    parameters: w,h 一张图横纵各有几个格点
     return：obj_points,img_points,size
     '''
     # 设置寻找亚像素角点的参数，采用的停止准则是最大循环次数30和最大误差容限0.001
@@ -18,10 +18,10 @@ def detection(path,w,h):
     images = glob.glob(path)
     for fname in images:
         img = cv2.imread(fname)
-        cv2.imshow('img',img)
+        # cv2.imshow('img',img)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         size = gray.shape[::-1]
-        ret, corners = cv2.findChessboardCorners(gray, (h, w), None)
+        ret, corners = cv2.findChessboardCorners(gray, (w, h), None)
         if ret:
             obj_points.append(objp)
             corners2 = cv2.cornerSubPix(gray, corners, (5, 5), (-1, -1), criteria)  # 在原角点的基础上寻找亚像素角点
@@ -30,9 +30,9 @@ def detection(path,w,h):
                 img_points.append(corners2)
             else:
                 img_points.append(corners)
-            cv2.drawChessboardCorners(img, (w-1,h), corners, ret)  # 记住，OpenCV的绘制函数一般无返回值
-            cv2.imshow('img', img)
-            cv2.waitKey(50)
+            # cv2.drawChessboardCorners(img, (w-1,h), corners, ret)  # 记住，OpenCV的绘制函数一般无返回值
+            # cv2.imshow('img', img)
+            # cv2.waitKey(50)
     cv2.destroyAllWindows()
     return obj_points,img_points,size
 
@@ -54,6 +54,7 @@ if __name__ == "__main__":
     path = "./Project_Stereo_left/left/*.jpg"
     #step1 找出棋盘中的格点位置
     obj_points,img_points,size = detection(path,w,h)
+    print("size:",size)
 
     #step2 相机标定
     ret, itsmtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, size, None, None)
@@ -63,14 +64,15 @@ if __name__ == "__main__":
     print("外参矩阵:\n", etsmtxs)  #外参数矩阵 list包含n个外参数矩阵，矩阵维数是(4,4)
 
     #step3 选一张图片进行校正
-    img = cv2.imread("./Project_Stereo_left/left/left01.jpg")
+    width,height = size
+    img = cv2.imread("./Project_Stereo_left/left/left05.jpg")
     cv2.imshow("undistort before",img)
     cv2.waitKey(1000)
-    newcameramtx, roi=cv2.getOptimalNewCameraMatrix(itsmtx,dist,(w,h),0,(w,h)) # 自由比例参数
+    newcameramtx, roi=cv2.getOptimalNewCameraMatrix(itsmtx,dist,(width,height),0,(width,height)) # 自由比例参数
     newimg = cv2.undistort(img,itsmtx,dist,None,newcameramtx)
     cv2.imshow("after undistort",newimg)
     cv2.waitKey(1000)
-    x_,y_,w_,h_ = roi
-    dst = newimg[y_:y_+h_, x_:x_+w_]
-    cv2.imshow("after cut",dst)
-    cv2.waitKey(1000)
+    # x_,y_,w_,h_ = roi
+    # dst = newimg[y_:y_+h_, x_:x_+w_]
+    # cv2.imshow("after cut",dst)
+    # cv2.waitKey(1000)
