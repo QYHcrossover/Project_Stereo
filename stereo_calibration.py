@@ -1,27 +1,23 @@
-from single_calibration import *
-
-def extract(ets):
-	'''
-	paramter: ets extrinsics matrix for each picture
-	return: R,t rotate matrix and translate vector
-	'''
-	R = ets[:3,:3]
-	t = ets[3,:3][:,np.newaxis]
-	return R,t
+import cv2
+import numpy as np
+import glob
+from single_calibration import detection
 
 if __name__ == "__main__":
+	#step0 参数设置
+	w,h = 9,6
 	leftpath = "./Project_Stereo_left/left/*.jpg"
-	its_left,dist_left,ets_left = singleCalibration(leftpath,9,6)
 	rightpath = "./Project_Stereo_right/right/*.jpg"
-	its_right,dist_right,ets_right = singleCalibration(rightpath,9,6)
-	# print(its_left,dist_left,ets_left)
-	# print(its_right,dist_right,ets_right)
-
-	#分别从两个外参矩阵中提取Rl,tl,Rr,tr并计算R,t
-	for i in range(len(ets_left)):
-		Rl,tl = extract(ets_left[i])
-		Rr,tr = extract(ets_right[i])
-		# 计算R
-		R = Rr@Rl.T
-		t = tr-R@tl
-		print(R,t)
+	#step1 分别找出棋盘中的格点位置
+	objectPoints,imagePoints1,imageSize = detection(leftpath,w,h)
+	_,imagePoints2,_ = detection(rightpath,w,h)
+	#step2 先进行单目标定
+	ret1, cameraMatrix1, distCoeffs1, rvecs1, tvecs1 = cv2.calibrateCamera(objectPoints,imagePoints1,imageSize,None,None)
+	ret2, cameraMatrix2, distCoeffs2, rvecs2, tvecs2 = cv2.calibrateCamera(objectPoints,imagePoints1,imageSize,None,None)
+	#step3 再进行双目标定
+	retval, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, R, T, E, F = cv2.stereoCalibrate(objectPoints, imagePoints1, imagePoints2, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, imageSize)
+	print("R:\n",R) #旋转矩阵
+	print("T:\n",T) #平移矩阵
+	print("E:\n",E) #本征矩阵
+	print("F:\n",F) #基础矩阵
+	

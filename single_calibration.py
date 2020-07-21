@@ -2,18 +2,11 @@ import cv2
 import numpy as np
 import glob
 
-def singleCalibration(path,w,h):
+def detection(path,w,h):
     '''
-    function for singleCalibration
-    Parameters:
-        - path : input for glob,image path
-        - w,h : number of points in length or width
-    returns:
-        - itsmtx : intrinsics matrix
-        - dist : distortion coefficients;
-        - etsmtxs : extrinsics matrix for each picture
+     parameters: w,h 一张图横纵各有几个格点
+    return：obj_points,img_points,size
     '''
-    
     # 设置寻找亚像素角点的参数，采用的停止准则是最大循环次数30和最大误差容限0.001
     criteria = (cv2.TERM_CRITERIA_MAX_ITER | cv2.TERM_CRITERIA_EPS, 30, 0.001)
     # 获取标定板角点的位置
@@ -39,9 +32,13 @@ def singleCalibration(path,w,h):
                 img_points.append(corners)
             cv2.drawChessboardCorners(img, (w-1,h), corners, ret)  # 记住，OpenCV的绘制函数一般无返回值
             cv2.imshow('img', img)
-            cv2.waitKey(100)
+            cv2.waitKey(50)
     cv2.destroyAllWindows()
-    ret, itsmtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, size, None, None)
+    return obj_points,img_points,size
+
+
+#从旋转矩阵和平移向量中获得外参矩阵
+def extrinsicsMatrix(rvec,tvec):
     etsmtxs = [] #存储外参矩阵
     for rvec,tvec in zip(rvecs,tvecs):
         etsmtx = np.zeros([4,4])
@@ -50,15 +47,30 @@ def singleCalibration(path,w,h):
         etsmtx[3,:3] = np.squeeze(tvec) #平移向量
         etsmtx[3,3] = 1 #1
         etsmtxs.append(etsmtx)
-
-    return itsmtx,dist,etsmtxs
+    return etsmtxs
 
 if __name__ == "__main__":
+    w,h = 9,6
     path = "./Project_Stereo_left/left/*.jpg"
-    itsmtx,dist,etsmtxs = singleCalibration(path,9,6)
+    #step1 找出棋盘中的格点位置
+    obj_points,img_points,size = detection(path,w,h)
+
+    #step2 相机标定
+    ret, itsmtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, size, None, None)
     print("内参矩阵:\n", itsmtx) # 内参数矩阵
     print("畸变矩阵:\n", dist)  # 畸变系数   
+    etsmtxs = extrinsicsMatrix(rvecs,tvecs)
     print("外参矩阵:\n", etsmtxs)  #外参数矩阵 list包含n个外参数矩阵，矩阵维数是(4,4)
-    print(len(etsmtxs)) #13
-    print(etsmtxs[0].shape) #(4,4)
 
+    #step3 选一张图片进行校正
+    img = cv2.imread("./Project_Stereo_left/left/left01.jpg")
+    cv2.imshow("undistort before",img)
+    cv2.waitKey(1000)
+    newcameramtx, roi=cv2.getOptimalNewCameraMatrix(itsmtx,dist,(w,h),0,(w,h)) # 自由比例参数
+    newimg = cv2.undistort(img,itsmtx,dist,None,newcameramtx)
+    cv2.imshow("after undistort",newimg)
+    cv2.waitKey(1000)
+    x_,y_,w_,h_ = roi
+    dst = newimg[y_:y_+h_, x_:x_+w_]
+    cv2.imshow("after cut",dst)
+    cv2.waitKey(1000)
