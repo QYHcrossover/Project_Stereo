@@ -30,10 +30,10 @@ def detection(path,w,h):
                 img_points.append(corners2)
             else:
                 img_points.append(corners)
-            # cv2.drawChessboardCorners(img, (w-1,h), corners, ret)  # 记住，OpenCV的绘制函数一般无返回值
-            # cv2.imshow('img', img)
-            # cv2.waitKey(50)
-    cv2.destroyAllWindows()
+    #         cv2.drawChessboardCorners(img, (w,h), corners, ret)  # 记住，OpenCV的绘制函数一般无返回值
+    #         cv2.imshow('img', img)
+    #         cv2.waitKey(50)
+    # cv2.destroyAllWindows()
     return obj_points,img_points,size
 
 
@@ -71,7 +71,8 @@ if __name__ == "__main__":
     newcameramtx, roi=cv2.getOptimalNewCameraMatrix(itsmtx,dist,(width,height),0,(width,height)) # 自由比例参数
     newimg = cv2.undistort(img,itsmtx,dist,None,newcameramtx)
     cv2.imshow("after undistort",newimg)
-    cv2.waitKey(1000)
+    cv2.waitKey(0)
+    #step4 结果裁切
     # x_,y_,w_,h_ = roi
     # dst = newimg[y_:y_+h_, x_:x_+w_]
     # cv2.imshow("after cut",dst)

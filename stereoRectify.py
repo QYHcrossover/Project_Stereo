@@ -41,6 +41,6 @@ if __name__ == "__main__":
 	print(newimg1)
 	print(newimg2)
 	cv2.imshow("newimg1",newimg1)
-	cv2.waitKey(0)
+	cv2.waitKey(500)
 	cv2.imshow("newimg2",newimg2)
 	cv2.waitKey(0)
