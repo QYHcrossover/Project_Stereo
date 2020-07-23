@@ -16,6 +16,8 @@
 - 立体校正
 - SGBM算法求视差
 
+收集到一份张正友标定的python源码：
+
 ## 项目内容
 
 ### single_calibration
@@ -61,3 +63,9 @@
 然后是参数调节面板和视差图：
 
 ![image-20200722101424905](https://cdn.jsdelivr.net/gh/QYHcrossover/blog-imgbed/blogimg/20200722101426.png)
+
+### Zhang's method
+
+能跑通，结果和opencv实现的差不多
+
+![image-20200723221134578](https://cdn.jsdelivr.net/gh/QYHcrossover/blog-imgbed/blogimg/20200723221135.png)

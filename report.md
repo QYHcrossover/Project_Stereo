@@ -1,3 +1,29 @@
+---
+Reporter: 秦瑜恒
+Repo: https://github.com/QYHcrossover/Project_Stereo
+email: qinyuheng@hhu.edu.cn
+---
+
+[toc]
+
+## Overview
+
+第一次接触立体深度估计这方面的项目，之前计算机视觉了解得多的就只有图像识别、目标检测、语义分割这个三个基本的任务了。
+
+应该来说前后花了不到7天时间，从单相机标定开始，逐步了解到双相机标定，立体校正，立体匹配算法，最后到双目视觉和单目视觉的深度学习方法，自我感觉学习进度蛮快的了，自己心里也有点小得意。在作业和编程的完成情况如下：
+
+- 作业方面：除了20题用 CUDA 加速 SGM 算法，23题自己加速一种深度学习方法，以及19题比较当下最好的算法和SGM算法未完成外，其他题目都有作答(尽自己全力去答了)
+- 编程方面：单相机标定，双相机标定、畸变校正、立体校正等自己使用python-opencv实现完成，跑通代码(结果也应该问题不大吧)；张正友算法底层实现这部分从网上找到了一份源码，也能跑通(跑出来结果和opencv的API实现的结果差不多)
+- 概念方面：
+  - 前面单相机标定，双相机标定，立体校正相关概念理解得应该还算透彻吧，题目中的一些公式推导题也都做出来了，不过也不知道具体正确与否
+  - 立体匹配算法方面，我看了一个技术讲座；大概了解了立体匹配的基本内容，包括难点、匹配流程(代价计算方法、代价空间、代价聚合……）等
+  - 最后关于深度学习下的双目视觉和单目视觉，找了很多综述性的文章来看，也是有了一些基本的概念（21,22题），尝试地用云GPU跑了下PSM-Net的测试代码，感觉还行
+- 其他：
+  - 写了两篇博客，第一篇[双目相机基本概念](https://blog.csdn.net/weixin_43796012/article/details/107547525)；是看了tutorial2这个讲义后，对极线约束、本征矩阵、基础矩阵这几个概念简直豁然开朗啊，这份讲义图真的很好，也有基本的推导公式在上面。
+  - 另外一篇是[立体匹配算法笔记](https://blog.csdn.net/weixin_43796012/article/details/107546228)；是看了奥比中光这个企业的一个技术讲座做的笔记，讲了很多立体匹配的基本概念
+
+这几天基本上每时每刻都投入到了这个项目当中去，一方面是想借这个项目好好表现自己，**希望证明自己的能力；**另一方面**探索知识，解决问题**这个过程也像打怪升级一样是容易上瘾的。通过这个project，我也对这块产生了浓厚的兴趣，甚至萌生出一个毕业设计搞个树莓派装俩摄像头试试能不能测量深度距离啊，哈哈哈，如果有条件的就试试。
+
 ----
 
 ## Q1: About **intrinsics** and **extrinsics** of a camera and **camera matrix**
@@ -138,7 +164,9 @@ References:
 
 一共涉及到**单应性矩阵求解**、**内参数求解**、**外参数求解**，**畸变系数求解**；用到的方法涉及到SVD分解，最小二乘法，极大似然估计等；
 
-确实非常复杂，我估计自己实现需要很长时间；不过我找到一份源码，经过实测可以运行；且结果和opencv实现的非常接近，还是由于时间关系也没有对源码进行深入研究。
+确实非常复杂，我估计自己实现需要很长时间；不过我找到一份源码，经过实测可以运行；
+
+结果和opencv实现的非常接近，还是由于时间关系也没有对源码进行深入研究。
 
 References:
 
@@ -179,6 +207,7 @@ Ans10：
 References:
 
 - [知乎|小白视角之极线约束](https://zhuanlan.zhihu.com/p/143299493) 我觉得这篇挺好理解的
+- [https://courses.engr.illinois.edu/cs543/sp2011/lectures/Lecture%2023%20-%20Epipolar%20Geometry%20and%20Stereo%20-%20Vision_Spring2011.pdf](https://courses.engr.illinois.edu/cs543/sp2011/lectures/Lecture 23 - Epipolar Geometry and Stereo - Vision_Spring2011.pdf)老师给的Epipolar tutorial2，这个讲义太棒了
 
 -----
 
@@ -193,6 +222,11 @@ References:
 ---
 
 后面看了老师给的tutorial 2,思路瞬间清晰了起来啊！终于理解为什么有极线约束，本征矩阵和基础矩阵到底是怎么来的；**写了篇博客**记录了下这些概念和推导过程，基础矩阵的推导也在这里面，这里就不重复写了；博客链接https://blog.csdn.net/weixin_43796012/article/details/107483564，写博客写得还是挺累的
+
+References:
+
+- [https://courses.engr.illinois.edu/cs543/sp2011/lectures/Lecture%2023%20-%20Epipolar%20Geometry%20and%20Stereo%20-%20Vision_Spring2011.pdf](https://courses.engr.illinois.edu/cs543/sp2011/lectures/Lecture 23 - Epipolar Geometry and Stereo - Vision_Spring2011.pdf)老师给的Epipolar tutorial2，这个讲义太棒了
+- [CSDN|机器视觉学习笔记（6）——双目摄像机标定参数说明](https://blog.csdn.net/xuelabizp/article/details/50417914)
 
 -----
 
@@ -246,7 +280,7 @@ References:
 - [CSDN|双摄像头立体成像(三)-畸变矫正与立体校正](https://blog.csdn.net/weixin_30300225/article/details/97316776)
 - [博客园|第七节、双目视觉之空间坐标计算](https://www.cnblogs.com/zyly/p/9373991.html#_label1_5)
 - [CSDN|StereoRectify()函数定义及用法畸变矫正与立体校正](https://blog.csdn.net/qq_36537774/article/details/85005552)
-- [opencv-doc|stereoRectify()]https://docs.opencv.org/3.4.0/d9/d0c/group__calib3d.html#ga617b1685d4059c6040827800e72ad2b6
+- [opencv-doc|stereoRectify()](https://docs.opencv.org/3.4.0/d9/d0c/group__calib3d.html#ga617b1685d4059c6040827800e72ad2b6)
 - [opencv-doc|initUndistortRectifyMap()](https://docs.opencv.org/3.4.0/da/d54/group__imgproc__transform.html#ga7dfb72c9cf9780a347fbe3d1c47e5d5a)
 - [opencv-doc|remap()](https://docs.opencv.org/3.4.0/da/d54/group__imgproc__transform.html#gab75ef31ce5cdfb5c44b6da5f3b908ea4)
 
@@ -255,6 +289,10 @@ References:
 tutorial 2的一张图画得，想到了初中学的相似三角形；需要稍微动点脑筋的是$d$的含义，其实也很简单补块三角形就看出来了，如图所示：
 
 ![img](https://cdn.jsdelivr.net/gh/QYHcrossover/blog-imgbed/blogimg/20200723181005.png)
+
+References:
+
+- [https://courses.engr.illinois.edu/cs543/sp2011/lectures/Lecture%2023%20-%20Epipolar%20Geometry%20and%20Stereo%20-%20Vision_Spring2011.pdf](https://courses.engr.illinois.edu/cs543/sp2011/lectures/Lecture 23 - Epipolar Geometry and Stereo - Vision_Spring2011.pdf)老师给的Epipolar tutorial2，这个讲义太棒了
 
 ## Q17: SGBM
 
@@ -276,6 +314,21 @@ References:
 - [CSDN|【码上实战】【立体匹配系列】经典SGM：（1）框架与类设计](https://ethanli.blog.csdn.net/article/details/105065660)
 - [CSDN|Python/openCV 中cv2.StereoSGBM_create()参数的含义](https://blog.csdn.net/jackiesimpson/article/details/80099277)
 - [CSDN|python实现SGBM图像匹配算法](https://download.csdn.net/download/memphis147/10935921?utm_medium=distribute.pc_relevant.none-task-download-BlogCommendFromMachineLearnPai2-4.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-download-BlogCommendFromMachineLearnPai2-4.nonecase)
+
+---
+
+在网上找立体匹配资料的时候，我找到了一家做3D视觉的公司奥比中光；它对外有一次技术讲座，就是将立体匹配的发展，我看了这个视频了解了立体匹配的很多概念，包括：
+
+- 立体匹配的**难点**
+- 立体匹配**算法分类**（局部、半局部、全局方法）
+- 立体**匹配流程**（**匹配代价计算**、**代价空间**、**代价聚合**、**视差计算**、**视差优化**）
+- 有哪些端到端的方法
+
+**写了一篇博客记录了学到的东西**，博客链接:[立体匹配算法笔记](https://blog.csdn.net/weixin_43796012/article/details/107546228)
+
+References:
+
+- [奥比中光直播课](https://mp.weixin.qq.com/s/VGNIxCSGMFR7ZyJ-K6GBrA)
 
 ---
 
@@ -330,6 +383,7 @@ References：
 References:
 
 - [知乎|单目视觉深度估计测距的前生今世](https://zhuanlan.zhihu.com/p/56263560)
+- [知乎|基于深度学习的单目深度估计综述](https://zhuanlan.zhihu.com/p/111759578)
 
 ---
 
@@ -354,5 +408,6 @@ References:
 References：
 
 - [github|PSMNet](https://github.com/JiaRenChang/PSMNet)
-
+- [CSDN|运行PSMNet网络时遇到的问题及解决方案](https://blog.csdn.net/qq_36104364/article/details/80406327)
 - [CSDN|论文阅读笔记之Dispnet](https://blog.csdn.net/kongfy4307/article/details/75212800)
+
